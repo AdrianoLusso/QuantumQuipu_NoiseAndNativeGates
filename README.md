@@ -6,6 +6,8 @@ Repositorio del proyecto de Investigación "Noise and Native Gates" del grupo Qu
 * Simular el ruido en NISQ devices.
 * Reproducir y expandir los resultados presentados con metodos de mitigación de errores.
 
+
+
   Mentor: Victor Onofre.
   
   Quantum Inters: Adriano Lusso, Maria Ramos.
