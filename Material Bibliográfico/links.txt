@@ -1,0 +1,5 @@
+*Matrices de densidad: https://learn.qiskit.org/course/quantum-hardware/density-matrix
+
+*Construcción de modelos de ruido en qiskit:
+ https://qiskit.org/ecosystem/aer/tutorials/3_building_noise_models.html
+ https://qiskit.org/ecosystem/aer/apidocs/aer_noise.html
