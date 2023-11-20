@@ -1,0 +1,33 @@
+[project]
+name = "Noise_and_native_gates"
+version = "0.0.1"
+authors = [{ name="Adriano", email="@gmail.com"}, {name="Maria", email="@gmail.com"}, {name="Victor Onofre", email="vonofre68@gmail.com"},]
+description = "As part of QuantumQuipu projects"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = ["Programming Language :: Python :: 3",
+    "License :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",]
+
+[project.urls]
+"Homepage" = ""
+
+#================================================================
+
+[tool.black]
+line-length = 100
+
+[tool.pycln]
+all = true
+
+[tool.isort]
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 100
+multi_line_output = 3
+use_parentheses = true
+
+[tool.ruff]
+line-length = 100
