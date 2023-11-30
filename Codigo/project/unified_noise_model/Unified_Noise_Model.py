@@ -9,6 +9,12 @@ class Unified_Noise_Model:
         """Create and empty noise model."""
         self.noise_model = NoiseModel()
 
+        self.one_qubit_gates_depolarizing_noise_channel = None
+        self.two_qubits_gates_depolarizing_noise_channel = None
+
+        self.one_qubit_gates_relaxation_dephasing_noise_channel = []
+        self.two_qubits_gates_relaxation_dephasing_noise_channel = []
+
     def add_all_noise_channels(
         self,
         state_preparation_error_prob,
@@ -20,8 +26,8 @@ class Unified_Noise_Model:
         two_qubits_gates,
         two_qubits_gates_times,
         qubits,
-        qubits_t1,
-        qubits_t2,
+        qubits_T1,
+        qubits_T2,
     ):
         """Add the three noise channels to the UNM:
         1- Depolarizing Channel.
@@ -48,17 +54,41 @@ class Unified_Noise_Model:
             qubits_t2: list of floats that represents T2 for each of the qubits.
         """
 
-        self.add_depolarizing_channel(self, depolarizing_prob, one_qubit_gates, two_qubits_gates)
-
-        self.add_relaxation_dephasing_channel(
+        # Creates the depolarizing and relaxation and dephasing channels
+        self.create_depolarizing_channel(depolarizing_prob)
+        self.create_relaxation_dephasing_channel(
             qubits,
-            qubits_t1,
-            qubits_t2,
+            qubits_T1,
+            qubits_T2,
             one_qubit_gates,
             one_qubit_gates_times,
             two_qubits_gates,
             two_qubits_gates_times,
         )
+
+        # Compose the depolarizing and relaxation and dephasing channels.
+        # p --after channels-->RD(D(p)) where:
+        # * RD() = relaxation and dephasing channel
+        # * D() = depolarizing channel
+        for qubit in qubits:
+            for gate in range(len(one_qubit_gates)):
+                error = self.one_qubit_gates_depolarizing_noise_channel.compose(
+                    self.one_qubit_gates_relaxation_dephasing_noise_channel[qubit][gate],
+                )
+                self.noise_model.add_quantum_error(error, one_qubit_gates[gate], [qubit])
+
+            for second_qubit in qubits:
+                for gate in range(len(two_qubits_gates)):
+                    error = self.two_qubits_gates_depolarizing_noise_channel.compose(
+                        self.two_qubits_gates_relaxation_dephasing_noise_channel[qubit][
+                            second_qubit
+                        ][gate],
+                    )
+                    self.noise_model.add_quantum_error(
+                        error,
+                        two_qubits_gates[gate],
+                        [qubit, second_qubit],
+                    )
 
         self.add_spam_channel(
             state_preparation_error_prob,
@@ -115,7 +145,7 @@ class Unified_Noise_Model:
         add_one_qubit_gates_noise=True,
         add_two_qubits_gates_noise=True,
     ):
-        """Create a depolarizing channel.
+        """Adds a depolarizing channel to the model.
 
         Args:
             depolarizing_prob(float): probability of depolarizing error to happen
@@ -132,15 +162,51 @@ class Unified_Noise_Model:
         for each qubit and amount of qubits.
         """
 
+        # Creates and save the depolarizing channel
+        self.create_depolarizing_channel(
+            depolarizing_prob,
+            add_one_qubit_gates_noise,
+            add_two_qubits_gates_noise,
+        )
+
+        # Adds the depolarizing channel to the model
+        self.noise_model.add_all_qubit_quantum_error(
+            self.one_qubit_gates_depolarizing_noise_channel,
+            one_qubit_gates,
+        )
+        self.noise_model.add_all_qubit_quantum_error(
+            self.two_qubits_gates_depolarizing_noise_channel,
+            two_qubits_gates,
+        )
+
+    def create_depolarizing_channel(
+        self,
+        depolarizing_prob,
+        add_one_qubit_gates_noise=True,
+        add_two_qubits_gates_noise=True,
+    ):
+        """Create a depolarizing channel and save it.
+
+        Args:
+            depolarizing_prob(float): probability of depolarizing error to happen
+            add_one_qubit_gates_noise(Boolean): defines if the channel will add noise to
+                                                one qubit gates
+            add_two_qubits_gates_noise(Boolean): defines if the channel will add noise to
+                                                 two qubits gates
+
+        Considerations:
+        the error probabilities are the same for each qubit,and for two qubits and
+        one qubit gates. In future updates, it will be possible to set different probabilties
+        for each qubit and amount of qubits.
+        """
         # Noise to one qubit gates
         if add_one_qubit_gates_noise:
             error = depolarizing_error(depolarizing_prob, 1)
-            self.noise_model.add_all_qubit_quantum_error(error, one_qubit_gates)
-
+            self.one_qubit_gates_depolarizing_noise_channel = error
         # Noise to two qubits gates
         if add_two_qubits_gates_noise:
             error = depolarizing_error(depolarizing_prob, 2)
-            self.noise_model.add_all_qubit_quantum_error(error, two_qubits_gates)
+            self.two_qubits_gates_depolarizing_noise_channel = error
 
     def add_relaxation_dephasing_channel(
         self,
@@ -152,7 +218,43 @@ class Unified_Noise_Model:
         two_qubits_gates: list,
         two_qubits_gates_times: list,
     ):
-        """Creates a relaxation and dephasing channel.
+        self.create_relaxation_dephasing_channel(
+            qubits,
+            qubits_T1,
+            qubits_T2,
+            one_qubit_gates,
+            one_qubit_gates_times,
+            two_qubits_gates,
+            two_qubits_gates_times,
+        )
+
+        for qubit in qubits:
+            for gate in range(len(one_qubit_gates)):
+                error = self.one_qubit_gates_relaxation_dephasing_noise_channel[qubit][gate]
+                self.noise_model.add_quantum_error(error, one_qubit_gates[gate], [qubit])
+
+            for second_qubit in qubits:
+                for gate in range(len(two_qubits_gates)):
+                    error = self.two_qubits_gates_relaxation_dephasing_noise_channel[qubit][
+                        second_qubit
+                    ][gate]
+                    self.noise_model.add_quantum_error(
+                        error,
+                        two_qubits_gates[gate],
+                        [qubit, second_qubit],
+                    )
+
+    def create_relaxation_dephasing_channel(
+        self,
+        qubits: QuantumRegister,
+        qubits_T1: list,
+        qubits_T2: list,
+        one_qubit_gates: list,
+        one_qubit_gates_times: list,
+        two_qubits_gates: list,
+        two_qubits_gates_times: list,
+    ):
+        """Create a relaxation and dephasing channel and save it as a list[qubit][][].
 
         Args:
             qubits (QuantumRegister): Qubits of the circuit to which add noise.
@@ -173,16 +275,19 @@ class Unified_Noise_Model:
         # For each qubit, we add it respective one_qubit and two_qubit gates noise
         for qubit in qubits:
             # Here, we add the one_qubit gates noise
+            self.one_qubit_gates_relaxation_dephasing_noise_channel.append([])
             for gate in range(len(one_qubit_gates)):
                 error = thermal_relaxation_error(
                     qubits_T1[qubit],
                     qubits_T2[qubit],
                     one_qubit_gates_times[qubit][gate],
                 )
-                self.noise_model.add_quantum_error(error, one_qubit_gates[gate], [qubit])
+                self.one_qubit_gates_relaxation_dephasing_noise_channel[qubit].append(error)
 
             # Here, we add the two_qubit gates noise
+            self.two_qubits_gates_relaxation_dephasing_noise_channel.append([])
             for second_qubit in qubits:
+                self.two_qubits_gates_relaxation_dephasing_noise_channel[qubit].append([])
                 for gate in range(len(two_qubits_gates)):
                     error = thermal_relaxation_error(
                         qubits_T1[qubit],
@@ -195,8 +300,6 @@ class Unified_Noise_Model:
                             two_qubits_gates_times[gate],
                         ),
                     )
-                    self.noise_model.add_quantum_error(
-                        error,
-                        two_qubits_gates[gate],
-                        [qubit, second_qubit],
-                    )
+                    self.two_qubits_gates_relaxation_dephasing_noise_channel[qubit][
+                        second_qubit
+                    ].append(error)
