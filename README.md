@@ -10,7 +10,7 @@ Repositorio del proyecto de Investigación "Noise and Native Gates" del grupo Qu
 
   Mentor: Victor Onofre.
 
-  Quantum Inters: Adriano Lusso, Maria Ramos.
+  Quantum Interns: Adriano Lusso, Maria Ramos.
 
 
 ## DEV
