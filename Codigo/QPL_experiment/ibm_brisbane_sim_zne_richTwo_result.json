@@ -1,0 +1,8 @@
+{
+    "success_prob": 0.26,
+    "avg_rel_error_on_success": 51.195390203471526, 
+    "avg_rel_error_on_fail": 179.53563029895673, 
+    "rel_error": 146.16716787413054, 
+    "avg_improvement_on_success": 3617.076364268232, 
+    "avg_deterioration_on_fail": 13696.198165030806
+}
