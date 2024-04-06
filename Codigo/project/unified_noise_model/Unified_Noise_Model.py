@@ -109,7 +109,7 @@ class Unified_Noise_Model:
                 for j in range(0, len(s)):
                     t = s[j].split(":")
                     qpairs.append(t[0])
-                    qvals.append(float(t[1]))
+                    qvals.append(float(t[1]) * 0.6)
             
 
     
@@ -122,7 +122,7 @@ class Unified_Noise_Model:
         #del rates[0]
         for i in range(len(rates)):
             if(not math.isnan(rates[i])):
-                rates[i] = float(rates[i])
+                rates[i] = float(rates[i]) * 0.6
             else:
                 rates[i] = 0
         self.measurement_error_rates = dict(zip(self.qubits, rates))
@@ -134,13 +134,13 @@ class Unified_Noise_Model:
 
         for i in range(0, len(t1er)):
             if(not math.isnan(t1er[i])):
-                t1er[i] = float(t1er[i]) / float(1000000)
+                t1er[i] = (float(t1er[i]) / float(1000000)) * 1.6
             else:
-                t1er[i] = t1er[0]
+                t1er[i] = (t1er[0]) * 1.6
             if(not math.isnan(t2er[i])):
-                t2er[i] = float(t2er[i]) / float(1000000)
+                t2er[i] = (float(t2er[i]) / float(1000000)) * 1.6
             else:
-                t2er[i] = t2er[0]
+                t2er[i] = (t2er[0]) * 1.6
 
         T1s = np.array(t1er)
         T2s = np.array(t2er)
