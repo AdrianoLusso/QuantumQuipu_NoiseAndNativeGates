@@ -1,0 +1,9 @@
+This is the directory for the conference poster research.
+
+* trying_unm_and_zne_over_quic.ipynb: notebook used for the executing the experiments.
+* results.ipynb: an overview over the results getted from the experiment.
+* ibm_brisbane.csv: calibration data for ibm_brisbane
+* ibm_brisbane_fake.csv: calibration data for ibm_brisbane, but decreasing two qubits noise rate a 40%.
+* /results: a folder with all the jsons and pngs results, all this files are used in results.ipynb.
+* ../project/unified_noise_model/Unified_Noise_Model.py: the python implementation of the unified noise model used for the experiments.
+* draws.drawio: not an important file, just where the poster drawings were done.
