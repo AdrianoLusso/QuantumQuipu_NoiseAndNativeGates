@@ -1,16 +1,25 @@
 # QuantumQuipu_NoiseAndNativeGates
-Repositorio del proyecto de Investigación "Noise and Native Gates" del grupo Quantum Quipu. Los objetivo del proyecto son:
+Repository of the "Noise and Native gates" research project of the Quantum Quipu group. The objectives of the project are:
 
-* Estudiar distintos métodos de siimulación de ruido en qubits superconductores.
-* Estudiar distintos métodos de mitigación de ruido.
-* Simular el ruido en NISQ devices.
-* Reproducir y expandir los resultados presentados con metodos de mitigación de errores.
+* Study different noise simulation methods in superconducting qubits.
+* Study different noise mitigation methods.
+* Simulate noise in NISQ devices.
+* Reproduce and expand the results presented with error mitigation methods.
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
   Mentor: Victor Onofre.
 
-  Quantum Inters: Adriano Lusso, Maria Ramos.
+  Quantum Interns: Adriano Lusso.
+
+## Results
+
+In branch 'qpl' you can find the latest results of this project. This includes:
+
+* In codigo/project directory, an implementation of a unified noise model inspired by "Konstantinos Georgopoulos, Clive Emary, and Paolo Zuliani - Modeling and simulating the noisy behavior of near-term quantum computers".
+* In conference_experiment, all the files related to and experiment which motivates a 3-page abstract and a poster that was accepted for QPL 2024 (https://qpl2024.dc.uba.ar/accepted.html).
+* In Presentacion Escuela de computacion cuantica en español/, the slides and video presentation of light talk done for "Escuela de Computación cuántica en español", an event organized in terms of the Qiskit Fall Fest. This event aims to introduce spanish speakers into the world of quantum computing.
+
 
 
 ## DEV
